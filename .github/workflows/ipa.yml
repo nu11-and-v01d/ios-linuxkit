@@ -10,7 +10,7 @@ jobs:
       - run: brew install meson ninja
       - name: Build iSH ARM64 target
         run: |
-          xcodebuild -project iSH.xcodeproj -target iSH-ARM64 \
+          xcodebuild -project iSH.xcodeproj -scheme iSH-ARM64 \
             -configuration Release -sdk iphoneos \
             -derivedDataPath build CODE_SIGNING_ALLOWED=NO build
       - name: Package IPA
