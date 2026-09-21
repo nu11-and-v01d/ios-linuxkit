@@ -1,0 +1,22 @@
+name: Build IPA
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - run: brew install meson ninja
+      - run: |
+          xcodebuild -project iSH.xcodeproj -scheme iSH-ARM64 \
+            -configuration Release -sdk iphoneos \
+            -derivedDataPath build CODE_SIGNING_ALLOWED=NO build
+      - run: |
+          mkdir Payload
+          cp -r build/Build/Products/Release-iphoneos/*.app Payload/
+          zip -r iSH-ARM64.ipa Payload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ipa
+          path: iSH-ARM64.ipa
