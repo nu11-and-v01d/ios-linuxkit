@@ -8,21 +8,21 @@ jobs:
         with:
           submodules: recursive
       - run: brew install meson ninja
-      - name: Build iSH ARM64 target
+      - name: Build iSH application
         run: |
-          xcodebuild -project iSH.xcodeproj -scheme iSH-ARM64 \
+          xcodebuild -project iSH.xcodeproj -scheme iSH \
             -configuration Release -sdk iphoneos \
             -derivedDataPath build CODE_SIGNING_ALLOWED=NO build
       - name: Package IPA
         run: |
           set -euo pipefail
-          app=$(find build/Build/Products/Release-iphoneos -maxdepth 1 -type d -name '*.app' -print -quit)
-          test -n "$app"
-          rm -rf Payload iSH-ARM64.ipa
+          app="build/Build/Products/Release-iphoneos/iSH.app"
+          test -d "$app"
+          rm -rf Payload iSH.ipa
           mkdir Payload
           cp -R "$app" Payload/
-          zip -qry iSH-ARM64.ipa Payload
+          zip -qry iSH.ipa Payload
       - uses: actions/upload-artifact@v4
         with:
           name: ipa
-          path: iSH-ARM64.ipa
+          path: iSH.ipa
